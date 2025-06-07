@@ -1,0 +1,6 @@
+node_modules/
+.direnv/
+.pyret/
+# pyret output, must be .cjs instead of .jarr because of "type": "module" 
+src/*.cjs
+

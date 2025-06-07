@@ -1,0 +1,20 @@
+{
+  "name": "pyret-autograder-cli",
+  "version": "0.0.1",
+  "description": "A cli tool to test and run Pyret autograders, using the same configuration expected by an adaptor.",
+  "author": "Owen Duckham <me@ironmoon.dev>",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "bin": {
+    "pyret-autograder": "./bin/index.js"
+  },
+  "scripts": {
+    "build": "npm run build_pawtograder",
+    "build_pawtograder": "node_modules/pyret-autograder-pawtograder/node_modules/pyret-autograder/node_modules/.bin/pyret --builtin-js-dir node_modules/pyret-autograder-pawtograder/node_modules/pyret-autograder/node_modules/pyret-lang/src/js/trove/ -p src/pawtograder.arr -o src/pawtograder.cjs -ck"
+  },
+  "dependencies": {
+    "commander": "^14.0.0",
+    "pyret-autograder-pawtograder": "github:neu-cs2000/pyret-autograder-pawtograder",
+    "yaml": "^2.8.0"
+  }
+}
