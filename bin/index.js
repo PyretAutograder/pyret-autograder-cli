@@ -33,9 +33,9 @@ program
 program
   .command("pawtograder")
   .description("Run the autograder on a Pawtograder specification.")
-  .argument("<submission>", "The submission path to run.")
+  .argument("<submission>", "The submission directory to use.")
   .option(
-    "-s, --solution <path>",
+    "-s, --solution <dir>",
     "The directory containing the solution and autograder specification.",
     ".",
   )
