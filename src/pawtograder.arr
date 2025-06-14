@@ -17,8 +17,8 @@
   with pyret-autograder-cli. If not, see <http://www.gnu.org/licenses/>.
 |#
 
-# TODO: use npm import type
-import file("../node_modules/pyret-autograder-pawtograder/src/main.arr") as P
+# TODO: nicer pyret entry?
+import npm("pyret-autograder-pawtograder", "../src/main.arr") as P
 include js-file("stdin")
 
 input = get-stdin()

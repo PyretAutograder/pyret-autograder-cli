@@ -64,14 +64,16 @@ export async function pawtograderAction(
       if (code !== 0) {
         return reject(new Error(`Grader failed: ${error}\noutput:\n${output}`));
       }
+      // HACK: remove once npm import stops logging shit
+      const hopefullyJson = output.trim().split("\n").at(-1);
       try {
-        resolve(JSON.parse(output));
+        resolve(JSON.parse(hopefullyJson));
       } catch (e) {
-        reject(new Error(`Invalid JSON from grader: ${output}\n${e}`));
+        reject(new Error(`Invalid JSON from grader: ${hopefullyJson}\n${e}`));
       }
     });
 
-    console.log(JSON.stringify(JSON.stringify(spec)))
+    console.log(JSON.stringify(spec))
 
     autograder.stdin.write(JSON.stringify(spec));
     autograder.stdin.end();
