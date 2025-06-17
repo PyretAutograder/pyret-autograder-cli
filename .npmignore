@@ -1,0 +1,5 @@
+node_modules/
+.direnv/
+.pyret/
+
+# don't ignore generated...
