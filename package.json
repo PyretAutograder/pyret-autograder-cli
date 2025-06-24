@@ -1,6 +1,6 @@
 {
   "name": "pyret-autograder-cli",
-  "version": "0.0.1-pre1",
+  "version": "0.0.1-pre3",
   "description": "A cli tool to test and run Pyret autograders, using the same configuration expected by an adaptor.",
   "author": "Owen Duckham <me@ironmoon.dev>",
   "license": "AGPL-3.0-or-later",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "commander": "^14.0.0",
-    "pyret-autograder-pawtograder": "0.0.1-pre1",
+    "pyret-autograder-pawtograder": "0.0.1-pre3",
     "yaml": "^2.8.0"
   }
 }
