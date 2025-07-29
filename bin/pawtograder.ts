@@ -16,35 +16,54 @@
   You should have received a copy of the GNU Affero General Public License
   with pyret-autograder-cli. If not, see <http://www.gnu.org/licenses/>.
 */
-// @ts-check
 
 import yaml from "yaml";
-import { readFile } from "fs/promises";
-import { spawn } from "child_process";
-import path from "path";
+import { readFile } from "node:fs/promises";
+import { spawn } from "node:child_process";
+import path from "node:path";
+import { Config, Spec, z } from "pyret-autograder-pawtograder";
+import chalk from "chalk";
 
-/** @import { Config, Spec } from "pyret-autograder-pawtograder" */
-
-export async function pawtograderAction(
-  /** @type {string} */ submission,
-  /** @type {{solution: string}}*/ options,
+async function resolveSpec(
+  submission: string,
+  { solution }: { solution: string },
 ) {
   const submissionPath = path.resolve(submission);
-  const solutionPath = path.resolve(options.solution);
+  const solutionPath = path.resolve(solution);
 
   const rawConfig = await readFile(
     path.join(solutionPath, "pawtograder.yml"),
     "utf8",
   );
-  /** @type { Config } */
-  const config = yaml.parse(rawConfig);
 
-  /** @type { Spec } */
-  const spec = {
+  const config: Config = yaml.parse(rawConfig);
+
+  const parseRes = Spec.safeParse({
     solution_dir: solutionPath,
     submission_dir: submissionPath,
     config,
-  };
+  });
+
+  if (parseRes.success) {
+    return parseRes.data;
+  } else {
+    const pretty = z.prettifyError(parseRes.error);
+    const err =
+      chalk.redBright.bold`Invalid specification provided` +
+      `:\n${chalk.yellow(pretty)}\n\n` +
+      chalk.bold`See the ` +
+      chalk.blackBright.bold`cause` +
+      chalk.bold` field for the full error.`;
+
+    throw new Error(err, { cause: parseRes.error });
+  }
+}
+
+export async function pawtograderAction(
+  submission: string,
+  options: { solution: string },
+) {
+  const spec = await resolveSpec(submission, options);
 
   const result = await new Promise((resolve, reject) => {
     const autograder = spawn("node", [
@@ -64,16 +83,15 @@ export async function pawtograderAction(
       if (code !== 0) {
         return reject(new Error(`Grader failed: ${error}\noutput:\n${output}`));
       }
-      // HACK: remove once npm import stops logging shit
-      const hopefullyJson = output.trim().split("\n").at(-1);
+      const outputTail = output.trim().split("\n").at(-1)!;
       try {
-        resolve(JSON.parse(hopefullyJson));
+        resolve(JSON.parse(outputTail));
       } catch (e) {
-        reject(new Error(`Invalid JSON from grader: ${hopefullyJson}\n${e}`));
+        reject(new Error(`Invalid JSON from grader: ${outputTail}\n${e}`));
       }
     });
 
-    console.log(JSON.stringify(spec))
+    console.log(JSON.stringify(spec));
 
     autograder.stdin.write(JSON.stringify(spec));
     autograder.stdin.end();

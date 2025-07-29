@@ -1,9 +1,0 @@
-{
-  "include": ["bin/*.js"],
-  "compilerOptions": {
-    "strict": true,
-    "moduleResolution": "nodenext",
-    "module": "nodenext",
-    "resolveJsonModule": true
-  }
-}
