@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-/* 
-	This file launches the ts file since there is no way currently to provide 
+/*
+	This file launches the ts file since there is no way currently to provide
 	node cli flags to shebangs.
 
-	Once --experimental-strip-types is stabilized into an LTS node release, this 
-	file can be removed and package.json can be updated to point to index.ts 
+	Once --experimental-strip-types is stabilized into an LTS node release, this
+	file can be removed and package.json can be updated to point to index.ts
 	directly.
 */
 
