@@ -1,13 +1,12 @@
 {
-  "include": ["bin/index.ts", "bin/pawtograder.ts"],
+  "include": ["bin/**/*.ts"],
   "compilerOptions": {
     "strict": true,
-    "moduleResolution": "node16",
-    "module": "node18",
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
     "resolveJsonModule": true,
     "noEmit": true,
     "erasableSyntaxOnly": true,
-    "verbatimModuleSyntax": true,
-    "allowImportingTsExtensions": true
+    "verbatimModuleSyntax": true
   }
 }

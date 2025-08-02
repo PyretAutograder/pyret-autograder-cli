@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
   Copyright (C) 2025 ironmoon <me@ironmoon.dev>
 
@@ -16,11 +17,10 @@
   You should have received a copy of the GNU Affero General Public License
   with pyret-autograder-cli. If not, see <http://www.gnu.org/licenses/>.
 */
-// @ts-check
 
 import { program } from "commander";
 import Package from "../package.json" with { type: "json" };
-import { pawtograderAction } from "./pawtograder.ts";
+import { pawtograderAction } from "./pawtograder.js";
 
 program
   .name("pyret-autograder-cli")
