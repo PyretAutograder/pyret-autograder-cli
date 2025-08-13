@@ -24,11 +24,16 @@ import path from "node:path";
 import { Config, Spec, z } from "pyret-autograder-pawtograder";
 import chalk from "chalk";
 
+const PKG_ROOT = path.resolve(import.meta.dirname, "..");
+const DEFAULT_COMPILED_PATH =
+  path.join(PKG_ROOT, "build/pyret/lib-compiled") +
+  ":" +
+  path.join(PKG_ROOT, "build/pyret/cpo");
+
 async function resolveSpec(
   submission: string,
   { solution }: { solution: string },
 ) {
-  const submissionPath = path.resolve(submission);
   const solutionPath = path.resolve(solution);
 
   const rawConfig = await readFile(
@@ -40,7 +45,7 @@ async function resolveSpec(
 
   const parseRes = Spec.safeParse({
     solution_dir: solutionPath,
-    submission_dir: submissionPath,
+    submission_dir: submission,
     config,
   });
 
@@ -63,18 +68,27 @@ export async function pawtograderAction(
   submission: string,
   options: { solution: string },
 ) {
-  const spec = await resolveSpec(submission, options);
+  const submissionPath = path.resolve(submission);
+  const spec = await resolveSpec(submissionPath, options);
 
   const result = await new Promise((resolve, reject) => {
-    const autograder = spawn("node", [
-      path.join(import.meta.dirname, "../src/pawtograder.cjs"),
-    ]);
+    const env = {
+      PA_PYRET_LANG_COMPILED_PATH: DEFAULT_COMPILED_PATH,
+      PA_CURRENT_LOAD_PATH: submissionPath,
+      ...process.env,
+      PWD: submissionPath,
+    };
+
+    const autograder = spawn(
+      process.execPath,
+      [path.join(import.meta.dirname, "../src/pawtograder.cjs")],
+      { env, cwd: submissionPath },
+    );
 
     console.log("grader started");
 
     let output = "";
     let error = "";
-
     autograder.stdout.on("data", (data) => (output += data.toString()));
     autograder.stderr.on("data", (data) => (error += data.toString()));
 
