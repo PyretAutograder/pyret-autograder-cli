@@ -7,7 +7,7 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PyretAutograder/pyret-autograder-cli"
+    "url": "git+https://github.com/PyretAutograder/pyret-autograder-cli.git"
   },
   "bin": {
     "pyret-autograder": "dist/index.js",
@@ -16,15 +16,15 @@
   "scripts": {
     "build": "npm run build_typescript && npm run build_pawtograder",
     "build_typescript": "swc bin -d dist",
-    "build_pawtograder": "npm run build_pawtograder:pyret && npm run build_pawtograder:prepare",
-    "build_pawtograder:pyret": "npx --no pyret -- --builtin-js-dir node_modules/pyret-lang/src/js/trove/ -p src/pawtograder.arr -o src/pawtograder.cjs -ck",
+    "build_pawtograder": "npm run build_pawtograder:prepare && npm run build_pawtograder:pyret",
     "build_pawtograder:prepare": "./scripts/prepare.sh",
+    "build_pawtograder:pyret": "./scripts/compile-pawtograder.sh",
     "prepack": "npm run build"
   },
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
-    "pyret-autograder": "0.0.1-pre.22",
+    "pyret-autograder": "0.0.1-pre.23",
     "pyret-autograder-pawtograder": "0.0.1-pre.18",
     "yaml": "^2.8.0",
     "canvas": "^3.1.0",

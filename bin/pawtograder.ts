@@ -28,7 +28,7 @@ const PKG_ROOT = path.resolve(import.meta.dirname, "..");
 const DEFAULT_COMPILED_PATH =
   path.join(PKG_ROOT, "build/pyret/lib-compiled") +
   ":" +
-  path.join(PKG_ROOT, "build/pyret/cpo");
+  path.join(PKG_ROOT, "build/pyret/cpo-compiled");
 
 async function resolveSpec(submissionPath: string, solutionPath: string) {
   const rawConfig = await readFile(

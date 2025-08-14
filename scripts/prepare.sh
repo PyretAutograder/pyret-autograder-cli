@@ -55,7 +55,7 @@ npm --prefix "$PYRET_DIR" rebuild --dry-run=false
 printf '%s\n' "==> make phaseA libA"
 make -C "$PYRET_DIR" -e SHELL="$(command -v bash)" phaseA libA
 
-mkdir -p -- "$PYRET_DIR/build/cpo"
+mkdir -p -- "$PYRET_DIR/build/cpo-compiled"
 printf '%s\n' 'import dcic2024 as _' > "$PYRET_DIR/build/compile-dcic.arr"
 
 printf '%s\n' "==> Compile dcic2024 context"
@@ -65,16 +65,16 @@ env -C "$PYRET_DIR" node build/phaseA/pyret.jarr \
   --builtin-arr-dir src/arr/trove/ \
   --builtin-arr-dir "$CPO_DIR/src/web/arr/trove/" \
   --require-config src/scripts/standalone-configA.json \
-  --compiled-dir build/cpo/ \
+  --compiled-dir build/cpo-compiled/ \
   --build-runnable build/compile-dcic.arr \
   --standalone-file src/js/base/handalone.js \
-  --outfile build/cpo/compile-dcic.jarr \
+  --outfile build/compile-dcic.jarr \
   -no-check-mode
 
 printf '%s\n' "==> Staging -> $OUT_DIR"
 cp -r "$PYRET_DIR/build/phaseA/lib-compiled" "$OUT_DIR/"
-cp -r "$PYRET_DIR/build/cpo"                 "$OUT_DIR/"
+cp -r "$PYRET_DIR/build/cpo-compiled"        "$OUT_DIR/"
 
 printf '%s\n' "==> Done."
 printf '%s\n' "    $OUT_DIR/lib-compiled"
-printf '%s\n' "    $OUT_DIR/cpo"
+printf '%s\n' "    $OUT_DIR/cpo-compiled"
