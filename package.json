@@ -5,6 +5,10 @@
   "author": "Owen Duckham <me@ironmoon.dev>",
   "license": "AGPL-3.0-or-later",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PyretAutograder/pyret-autograder-cli"
+  },
   "bin": {
     "pyret-autograder": "dist/index.js",
     "pyret-autograder-cli": "dist/index.js"
