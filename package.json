@@ -18,8 +18,8 @@
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
-    "pyret-autograder": "^0.0.1-pre18",
-    "pyret-autograder-pawtograder": "0.0.1-pre17",
+    "pyret-autograder": "^0.0.1-pre.19",
+    "pyret-autograder-pawtograder": "^0.0.1-pre.18",
     "yaml": "^2.8.0",
     "canvas": "^3.1.0",
     "cross-fetch": "^4.1.0",

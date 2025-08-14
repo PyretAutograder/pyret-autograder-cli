@@ -105,8 +105,6 @@ export async function pawtograderAction(
       }
     });
 
-    console.log(JSON.stringify(spec));
-
     autograder.stdin.write(JSON.stringify(spec));
     autograder.stdin.end();
   });
