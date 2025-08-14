@@ -84,7 +84,7 @@ export async function pawtograderAction(
       [path.join(import.meta.dirname, "../src/pawtograder.cjs")],
       {
         env,
-        // cwd: submissionPath,
+        cwd: submissionPath,
         //     [ stdin, stdout, stderr, custom]
         stdio: ["pipe", "pipe", "pipe", "pipe"],
       },
