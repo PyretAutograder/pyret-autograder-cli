@@ -18,7 +18,7 @@
     "build_typescript": "swc bin -d dist",
     "build_pawtograder": "npm run build_pawtograder:pyret && npm run build_pawtograder:prepare",
     "build_pawtograder:pyret": "npx --no pyret -- --builtin-js-dir node_modules/pyret-lang/src/js/trove/ -p src/pawtograder.arr -o src/pawtograder.cjs -ck",
-    "build_pawtograder:prepare": "./scripts/prepare.zsh",
+    "build_pawtograder:prepare": "./scripts/prepare.sh",
     "prepack": "npm run build"
   },
   "dependencies": {
