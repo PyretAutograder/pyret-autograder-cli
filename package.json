@@ -12,14 +12,16 @@
   "scripts": {
     "build": "npm run build_typescript && npm run build_pawtograder",
     "build_typescript": "swc bin -d dist",
-    "build_pawtograder": "npx --no pyret -- --builtin-js-dir node_modules/pyret-lang/src/js/trove/ -p src/pawtograder.arr -o src/pawtograder.cjs -ck && ./scripts/prepare.zsh",
+    "build_pawtograder": "npm run build_pawtograder:pyret && npm run build_pawtograder:prepare",
+    "build_pawtograder:pyret": "npx --no pyret -- --builtin-js-dir node_modules/pyret-lang/src/js/trove/ -p src/pawtograder.arr -o src/pawtograder.cjs -ck",
+    "build_pawtograder:prepare": "./scripts/prepare.zsh",
     "prepack": "npm run build"
   },
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
-    "pyret-autograder": "^0.0.1-pre.19",
-    "pyret-autograder-pawtograder": "^0.0.1-pre.18",
+    "pyret-autograder": "0.0.1-pre.22",
+    "pyret-autograder-pawtograder": "0.0.1-pre.18",
     "yaml": "^2.8.0",
     "canvas": "^3.1.0",
     "cross-fetch": "^4.1.0",

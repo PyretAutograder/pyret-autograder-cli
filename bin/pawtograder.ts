@@ -30,12 +30,7 @@ const DEFAULT_COMPILED_PATH =
   ":" +
   path.join(PKG_ROOT, "build/pyret/cpo");
 
-async function resolveSpec(
-  submission: string,
-  { solution }: { solution: string },
-) {
-  const solutionPath = path.resolve(solution);
-
+async function resolveSpec(submissionPath: string, solutionPath: string) {
   const rawConfig = await readFile(
     path.join(solutionPath, "pawtograder.yml"),
     "utf8",
@@ -45,7 +40,7 @@ async function resolveSpec(
 
   const parseRes = Spec.safeParse({
     solution_dir: solutionPath,
-    submission_dir: submission,
+    submission_dir: submissionPath,
     config,
   });
 
@@ -66,10 +61,15 @@ async function resolveSpec(
 
 export async function pawtograderAction(
   submission: string,
-  options: { solution: string },
+  { solution }: { solution: string },
 ) {
   const submissionPath = path.resolve(submission);
-  const spec = await resolveSpec(submissionPath, options);
+  const solutionPath = path.resolve(solution);
+  const spec = await resolveSpec(submissionPath, solutionPath);
+
+  console.log(
+    `Grading submission at ${submissionPath} with the specification located in ${solutionPath}`,
+  );
 
   const result = await new Promise((resolve, reject) => {
     const env = {
@@ -79,34 +79,55 @@ export async function pawtograderAction(
       PWD: submissionPath,
     };
 
-    const autograder = spawn(
-      process.execPath,
+    const child = spawn(
+      "node",
       [path.join(import.meta.dirname, "../src/pawtograder.cjs")],
-      { env, cwd: submissionPath },
+      {
+        env,
+        // cwd: submissionPath,
+        //     [ stdin, stdout, stderr, custom]
+        stdio: ["pipe", "pipe", "pipe", "pipe"],
+      },
     );
 
     console.log("grader started");
 
-    let output = "";
-    let error = "";
-    autograder.stdout.on("data", (data) => (output += data.toString()));
-    autograder.stderr.on("data", (data) => (error += data.toString()));
+    for (const [stream, target, name] of [
+      [child.stdout, process.stdout, chalk.blue`stdout`],
+      [child.stderr, process.stderr, chalk.red`stderr`],
+    ] as const) {
+      const prefix = `${name} » `;
+      let leftover = "";
+      stream.setEncoding("utf8");
+      stream.on("data", (chunk) => {
+        const lines = (leftover + chunk).split(/\n/);
+        leftover = lines.pop()!;
+        for (const line of lines) target.write(`${prefix}${line}\n`);
+      });
+      stream.on("end", () => {
+        if (leftover) target.write(`${prefix}${leftover}\n`);
+      });
+    }
 
-    autograder.on("close", (code) => {
+    const fd3 = child.stdio[3] as NodeJS.ReadableStream;
+    let output = "";
+    fd3.setEncoding("utf8");
+    fd3.on("data", (chunk: string) => (output += chunk));
+
+    child.on("close", (code) => {
       console.log("grader ended");
       if (code !== 0) {
-        return reject(new Error(`Grader failed: ${error}\noutput:\n${output}`));
+        return reject(new Error(`Grader failed with code ${code}.`));
       }
-      const outputTail = output.trim().split("\n").at(-1)!;
       try {
-        resolve(JSON.parse(outputTail));
+        resolve(JSON.parse(output));
       } catch (e) {
-        reject(new Error(`Invalid JSON from grader: ${outputTail}\n${e}`));
+        reject(new Error(`Invalid JSON from grader: ${output}\n${e}`));
       }
     });
 
-    autograder.stdin.write(JSON.stringify(spec));
-    autograder.stdin.end();
+    child.stdin.write(JSON.stringify(spec));
+    child.stdin.end();
   });
 
   console.dir(result);
