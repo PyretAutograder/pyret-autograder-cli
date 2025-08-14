@@ -41,7 +41,6 @@
   },
   "devDependencies": {
     "@types/node": "^24.1.0",
-    "pyret-npm": "^0.0.50",
     "swc": "^1.0.11"
   }
 }
