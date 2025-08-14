@@ -80,7 +80,7 @@ export async function pawtograderAction(
     };
 
     const child = spawn(
-      "node",
+      process.execPath,
       [path.join(import.meta.dirname, "../src/pawtograder.cjs")],
       {
         env,
