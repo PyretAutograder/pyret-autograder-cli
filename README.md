@@ -1,7 +1,13 @@
 # pyret-autograder-cli
 
-Make sure to build with
+A command-line interface for running pyret-autograders locally.
+
+## Usage
+
+Npm will automatically download the latest version of this package if you run
 
 ```
-npm run build
+npx pyret-autograder-cli --help
 ```
+
+The package also exposes a binary under the name `pyret-autograder`
