@@ -25,6 +25,7 @@
           packages = with pkgs; [
             nodejs_24
             gnumake
+            coreutils-full
           ];
           shellHook = ''
             export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.libuuid ]}:''$LD_LIBRARY_PATH"
