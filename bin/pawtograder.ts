@@ -18,11 +18,12 @@
 */
 
 import yaml from "yaml";
-import { readFile } from "node:fs/promises";
+import { readFile, mkdtemp } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { Config, Spec, z } from "pyret-autograder-pawtograder";
 import chalk from "chalk";
+import os from "os";
 
 const PKG_ROOT = path.resolve(import.meta.dirname, "..");
 const DEFAULT_COMPILED_PATH =
@@ -36,7 +37,9 @@ async function resolveSpec(submissionPath: string, solutionPath: string) {
     "utf8",
   );
 
-  const config: Config = yaml.parse(rawConfig);
+  const config: Config = yaml.parse(rawConfig, { merge: true });
+
+  console.dir(config, { depth: 3 });
 
   const parseRes = Spec.safeParse({
     solution_dir: solutionPath,
@@ -71,10 +74,16 @@ export async function pawtograderAction(
     `Grading submission at ${submissionPath} with the specification located in ${solutionPath}`,
   );
 
+  const artifactDir = await (async () => {
+    if (process.env.PA_ARTIFACT_DIR != null) return process.env.PA_ARTIFACT_DIR;
+    const prefix = path.join(os.tmpdir(), "pyret-autograder-");
+    return await mkdtemp(prefix);
+  })();
   const result = await new Promise((resolve, reject) => {
     const env = {
       PA_PYRET_LANG_COMPILED_PATH: DEFAULT_COMPILED_PATH,
       PA_CURRENT_LOAD_PATH: submissionPath,
+      PA_ARTIFACT_DIR: artifactDir,
       ...process.env,
       PWD: submissionPath,
     };
@@ -131,4 +140,5 @@ export async function pawtograderAction(
   });
 
   console.dir(result);
+  console.log(`Artifact Dir: ${artifactDir}`);
 }
