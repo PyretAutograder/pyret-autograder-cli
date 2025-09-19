@@ -10,4 +10,4 @@ Npm will automatically download the latest version of this package if you run
 npx pyret-autograder-cli --help
 ```
 
-The package also exposes a binary under the name `pyret-autograder`
+The package also exposes an executable under the name `pyret-autograder`
